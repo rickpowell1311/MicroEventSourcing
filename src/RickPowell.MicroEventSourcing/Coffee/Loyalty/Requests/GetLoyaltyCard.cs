@@ -20,6 +20,8 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Requests
             public int FreeCoffeesAwarded { get; set; }
 
             public int FreeCoffeesClaimed { get; set; }
+
+            public static Response Default => new();
         }
 
         public class Handler : IRequestHandler<Request, Response>
@@ -34,13 +36,18 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Requests
             public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
             {
                 var loyaltyCard = await _context.LoyaltyCards
-                    .SingleAsync(x => x.Customer.Name == request.CustomerName, cancellationToken);
+                    .SingleOrDefaultAsync(x => x.Customer.Name == request.CustomerName, cancellationToken);
+
+                if (loyaltyCard == null)
+                {
+                    return Response.Default;
+                }
 
                 return new Response
                 {
-                    FreeCoffeesClaimed = loyaltyCard.FreeCoffeesClaimed,
-                    FreeCoffeesAwarded = loyaltyCard.FreeCoffeesAwarded,
-                    PurchasedCoffees = loyaltyCard.PurchasedCoffees
+                    FreeCoffeesClaimed = loyaltyCard.FreeCoffeesClaimed.Count,
+                    FreeCoffeesAwarded = loyaltyCard.FreeCoffeesAwarded.Count,
+                    PurchasedCoffees = loyaltyCard.PurchasedCoffees.Count
                 };
             }
         }

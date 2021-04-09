@@ -3,10 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using RickPowell.MicroEventSourcing.Coffee.Loyalty.Data;
 using RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,8 +13,6 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Requests
         public class Request : IRequest
         {
             public string CustomerName { get; set; }
-
-            public int NumberOfCoffees { get; set; }
         }
 
         public class Handler : IRequestHandler<Request>
@@ -32,12 +26,14 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Requests
 
             public async Task<Unit> Handle(Request request, CancellationToken cancellationToken)
             {
+                var customer = new Customer(request.CustomerName);
+
                 var loyaltyCard = await _context.LoyaltyCards
-                    .SingleOrDefaultAsync(x => x.Customer.Name == request.CustomerName, cancellationToken: cancellationToken);
+                    .SingleOrDefaultAsync(x => x.Customer.Name == request.CustomerName, cancellationToken);
 
                 if (loyaltyCard == null)
                 {
-                    loyaltyCard = LoyaltyCard.Create(new Customer(request.CustomerName));
+                    loyaltyCard = LoyaltyCard.Create(customer);
                     _context.LoyaltyCards.Add(loyaltyCard);
                 }
 

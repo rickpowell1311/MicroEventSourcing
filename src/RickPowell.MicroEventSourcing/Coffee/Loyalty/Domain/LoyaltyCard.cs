@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain.Events;
+using System;
+using System.Collections.Generic;
 
 namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain
 {
@@ -8,14 +10,17 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain
 
         public Customer Customer { get; protected set; }
 
-        public int PurchasedCoffees { get; protected set; }
+        public ICollection<CoffeePurchased> PurchasedCoffees { get; protected set; }
 
-        public int FreeCoffeesAwarded { get; protected set; }
+        public ICollection<FreeCoffeeAwarded> FreeCoffeesAwarded { get; protected set; }
 
-        public int FreeCoffeesClaimed { get; protected set; }
+        public ICollection<FreeCoffeeClaimed> FreeCoffeesClaimed { get; protected set; }
 
         protected LoyaltyCard()
         {
+            PurchasedCoffees = new List<CoffeePurchased>();
+            FreeCoffeesAwarded = new List<FreeCoffeeAwarded>();
+            FreeCoffeesClaimed = new List<FreeCoffeeClaimed>();
         }
 
         public static LoyaltyCard Create(Customer customer)
@@ -28,24 +33,25 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain
 
         public void PurchaseCoffee()
         {
-            var newTotalCoffeesPurchased = PurchasedCoffees + 1;
+            var existingTotalCoffeesPurchased = PurchasedCoffees.Count;
+            var newTotalCoffeesPurchased = existingTotalCoffeesPurchased + 1;
 
-            if (newTotalCoffeesPurchased / 10 != PurchasedCoffees / 10)
+            if (newTotalCoffeesPurchased / 10 != existingTotalCoffeesPurchased / 10)
             {
-                FreeCoffeesAwarded += 1;
+                FreeCoffeesAwarded.Add(new FreeCoffeeAwarded(DateTime.UtcNow));
             }
 
-            PurchasedCoffees = newTotalCoffeesPurchased;
+            PurchasedCoffees.Add(new CoffeePurchased(DateTime.UtcNow));
         }
 
-        public void Claim()
+        public void ClaimFreeCoffee()
         {
-            if (FreeCoffeesAwarded <= FreeCoffeesClaimed)
+            if (FreeCoffeesClaimed.Count >= FreeCoffeesAwarded.Count)
             {
-                throw new ArgumentException("Cannot claim a free coffee yet :(");
+                throw new InvalidOperationException("No free coffees available");
             }
 
-            FreeCoffeesClaimed += 1;
+            FreeCoffeesClaimed.Add(new FreeCoffeeClaimed(DateTime.UtcNow));
         }
     }
 }

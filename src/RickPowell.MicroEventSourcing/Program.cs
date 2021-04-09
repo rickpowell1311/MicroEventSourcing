@@ -34,7 +34,7 @@ namespace RickPowell.MicroEventSourcing
                 {
                     // buy 10 coffees
                     await mediator.Send(buyCoffeeRequest);
-                } 
+                }
 
                 var loyaltyCard = await mediator.Send(new GetLoyaltyCard.Request
                 {
