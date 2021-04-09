@@ -26,20 +26,21 @@ namespace RickPowell.MicroEventSourcing
             {
                 var buyCoffeeRequest = new StampLoyaltyCard.Request
                 {
-                    NumberOfCoffees = 10,
                     CustomerName = "Rick Powell"
                 };
 
-                await mediator.Send(buyCoffeeRequest);
-
-                Console.WriteLine($"{buyCoffeeRequest.CustomerName} bought {buyCoffeeRequest.NumberOfCoffees} coffees");
+                for (int i = 0; i < 10; i++)
+                {
+                    // buy 10 coffees
+                    await mediator.Send(buyCoffeeRequest);
+                }
 
                 var loyaltyCard = await mediator.Send(new GetLoyaltyCard.Request
                 {
                     CustomerName = buyCoffeeRequest.CustomerName
                 });
 
-                Console.WriteLine($"{buyCoffeeRequest.CustomerName} can get {loyaltyCard.FreeCoffeesDue} free coffee(s)");
+                Console.WriteLine($"{buyCoffeeRequest.CustomerName} bought {loyaltyCard.PurchasedCoffees} coffees and has been awarded {loyaltyCard.FreeCoffeesAwarded} free coffees and has claimed {loyaltyCard.FreeCoffeesClaimed} coffees");
             }
             catch (Exception ex)
             {

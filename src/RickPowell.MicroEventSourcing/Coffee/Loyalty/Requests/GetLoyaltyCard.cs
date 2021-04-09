@@ -15,9 +15,9 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Requests
 
         public class Response
         {
-            public int TotalCoffeesPurchased { get; set; }
+            public int PurchasedCoffees { get; set; }
 
-            public int FreeCoffeesDue { get; set; }
+            public int FreeCoffeesAwarded { get; set; }
 
             public int FreeCoffeesClaimed { get; set; }
         }
@@ -38,9 +38,9 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Requests
 
                 return new Response
                 {
-                    FreeCoffeesClaimed = loyaltyCard.FreeCoffeesClaimed,
-                    FreeCoffeesDue = loyaltyCard.FreeCoffeesDue,
-                    TotalCoffeesPurchased = loyaltyCard.TotalCoffeesPurchased
+                    FreeCoffeesClaimed = loyaltyCard.FreeCoffeesClaimed.Count,
+                    FreeCoffeesAwarded = loyaltyCard.FreeCoffeesAwarded.Count,
+                    PurchasedCoffees = loyaltyCard.PurchasedCoffees.Count
                 };
             }
         }
