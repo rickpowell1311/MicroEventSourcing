@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using RickPowell.MicroEventSourcing.Coffee.Loyalty.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,8 +36,8 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Requests
 
             public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
             {
-                var loyaltyCard = await _context.LoyaltyCards
-                    .SingleOrDefaultAsync(x => x.Customer.Name == request.CustomerName, cancellationToken);
+                var loyaltyCard = await _context.LoyaltyCardProjections
+                    .SingleOrDefaultAsync(x => x.CustomerName == request.CustomerName, cancellationToken);
 
                 if (loyaltyCard == null)
                 {
@@ -45,9 +46,9 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Requests
 
                 return new Response
                 {
-                    FreeCoffeesClaimed = loyaltyCard.FreeCoffeesClaimed.Count,
-                    FreeCoffeesAwarded = loyaltyCard.FreeCoffeesAwarded.Count,
-                    PurchasedCoffees = loyaltyCard.PurchasedCoffees.Count
+                    FreeCoffeesClaimed = loyaltyCard.FreeCoffeesClaimed,
+                    FreeCoffeesAwarded = loyaltyCard.FreeCoffeesAwarded,
+                    PurchasedCoffees = loyaltyCard.PurchasedCoffees
                 };
             }
         }

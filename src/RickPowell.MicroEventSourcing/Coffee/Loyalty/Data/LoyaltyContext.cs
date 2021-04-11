@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain;
+using System.Linq;
 
 namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Data
 {
     public class LoyaltyContext : DbContext
     {
         public DbSet<LoyaltyCard> LoyaltyCards { get; set; }
+
+        public IQueryable<Domain.Projections.LoyaltyCard> LoyaltyCardProjections => LoyaltyCards.Select(x => x.Projection);
 
         public LoyaltyContext(DbContextOptions<LoyaltyContext> options) : base(options)
         {
@@ -15,11 +18,13 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            var purchaseEntity = modelBuilder.Entity<LoyaltyCard>();
-            purchaseEntity.OwnsOne(x => x.Customer);
-            purchaseEntity.OwnsMany(x => x.PurchasedCoffees);
-            purchaseEntity.OwnsMany(x => x.FreeCoffeesAwarded);
-            purchaseEntity.OwnsMany(x => x.FreeCoffeesClaimed);
+            var loyaltyCardEntity = modelBuilder.Entity<LoyaltyCard>();
+            loyaltyCardEntity.OwnsOne(x => x.Customer);
+            loyaltyCardEntity.OwnsMany(x => x.PurchasedCoffees);
+            loyaltyCardEntity.OwnsMany(x => x.FreeCoffeesAwarded);
+            loyaltyCardEntity.OwnsMany(x => x.FreeCoffeesClaimed);
+
+            loyaltyCardEntity.HasOne(x => x.Projection);
         }
     }
 }
