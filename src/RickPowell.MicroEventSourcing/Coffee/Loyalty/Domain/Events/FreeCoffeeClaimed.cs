@@ -2,13 +2,10 @@
 
 namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain.Events
 {
-    public class FreeCoffeeClaimed
+    public record FreeCoffeeClaimed
     {
-        public DateTime ClaimedOn { get; protected set; }
+        public DateTime ClaimedOn { get; init; }
 
-        public FreeCoffeeClaimed(DateTime claimedOn)
-        {
-            ClaimedOn = claimedOn;
-        }
+        public FreeCoffeeClaimed(DateTime claimedOn) => ClaimedOn = claimedOn;
     }
 }

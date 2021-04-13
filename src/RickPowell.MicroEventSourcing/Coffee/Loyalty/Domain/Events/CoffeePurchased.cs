@@ -2,13 +2,10 @@
 
 namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain.Events
 {
-    public class CoffeePurchased
+    public record CoffeePurchased
     {
-        public DateTime PurchasedOn { get; protected set; }
+        public DateTime PurchasedOn { get; init; }
 
-        public CoffeePurchased(DateTime purchasedOn)
-        {
-            PurchasedOn = purchasedOn;
-        }
+        public CoffeePurchased(DateTime purchasedOn) => PurchasedOn = purchasedOn;
     }
 }

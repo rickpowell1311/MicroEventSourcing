@@ -2,11 +2,11 @@
 
 namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain.Events
 {
-    public class LoyaltyCardCreated
+    public record LoyaltyCardCreated
     {
-        public Customer Customer { get; }
+        public Customer Customer { get; init; }
 
-        public DateTime CreatedOn { get; }
+        public DateTime CreatedOn { get; init; }
 
         public LoyaltyCardCreated(Customer customer, DateTime createdOn)
         {
