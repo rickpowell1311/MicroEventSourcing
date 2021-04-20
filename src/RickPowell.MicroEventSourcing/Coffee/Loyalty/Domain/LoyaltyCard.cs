@@ -32,9 +32,9 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain
             FreeCoffeesAwarded = new List<FreeCoffeeAwarded>();
             FreeCoffeesClaimed = new List<FreeCoffeeClaimed>();
 
-            CoffeePurchased += OnCoffeePurchased;
-            FreeCoffeeAwarded += OnFreeCoffeeAwarded;
-            FreeCoffeeClaimed += OnFreeCoffeeClaimed;
+            CoffeePurchased += e => PurchasedCoffees.Add(e);
+            FreeCoffeeAwarded += e => FreeCoffeesAwarded.Add(e);
+            FreeCoffeeClaimed += e => FreeCoffeesClaimed.Add(e);
 
             if (Projection == null)
             {
@@ -77,21 +77,6 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain
             }
 
             FreeCoffeeClaimed.Invoke(new FreeCoffeeClaimed(DateTime.UtcNow));
-        }
-
-        private void OnCoffeePurchased(CoffeePurchased evnt)
-        {
-            PurchasedCoffees.Add(evnt);
-        }
-
-        private void OnFreeCoffeeAwarded(FreeCoffeeAwarded evnt)
-        {
-            FreeCoffeesAwarded.Add(evnt);
-        }
-
-        private void OnFreeCoffeeClaimed(FreeCoffeeClaimed evnt)
-        {
-            FreeCoffeesClaimed.Add(evnt);
         }
     }
 }
