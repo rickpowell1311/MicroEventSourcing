@@ -4,13 +4,13 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain.Events
 {
     public record LoyaltyCardCreated
     {
-        public Customer Customer { get; init; }
+        public string CustomerName { get; init; }
 
         public DateTime CreatedOn { get; init; }
 
-        public LoyaltyCardCreated(Customer customer, DateTime createdOn)
+        public LoyaltyCardCreated(string customerName, DateTime createdOn)
         {
-            Customer = customer;
+            CustomerName = customerName;
             CreatedOn = createdOn;
         }
     }

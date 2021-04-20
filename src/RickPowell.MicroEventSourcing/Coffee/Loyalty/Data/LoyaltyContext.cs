@@ -19,7 +19,7 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Data
             base.OnModelCreating(modelBuilder);
 
             var loyaltyCardEntity = modelBuilder.Entity<LoyaltyCard>();
-            loyaltyCardEntity.OwnsOne(x => x.Customer);
+            loyaltyCardEntity.OwnsOne(x => x.CreatedLoyaltyCard);
             loyaltyCardEntity.OwnsMany(x => x.PurchasedCoffees);
             loyaltyCardEntity.OwnsMany(x => x.FreeCoffeesAwarded);
             loyaltyCardEntity.OwnsMany(x => x.FreeCoffeesClaimed);

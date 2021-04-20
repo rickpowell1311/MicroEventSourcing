@@ -8,13 +8,15 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain
     {
         public long Id { get; protected set; }
 
-        public Customer Customer { get; protected set; }
+        public string CustomerName { get; protected set; }
 
         public ICollection<CoffeePurchased> PurchasedCoffees { get; protected set; }
 
         public ICollection<FreeCoffeeAwarded> FreeCoffeesAwarded { get; protected set; }
 
         public ICollection<FreeCoffeeClaimed> FreeCoffeesClaimed { get; protected set; }
+
+        public LoyaltyCardCreated CreatedLoyaltyCard { get; protected set; }
 
         public Projections.LoyaltyCard Projection { get; protected set; }
 
@@ -32,6 +34,7 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain
             FreeCoffeesAwarded = new List<FreeCoffeeAwarded>();
             FreeCoffeesClaimed = new List<FreeCoffeeClaimed>();
 
+            LoyaltyCardCreated += e => CreatedLoyaltyCard = e;
             CoffeePurchased += e => PurchasedCoffees.Add(e);
             FreeCoffeeAwarded += e => FreeCoffeesAwarded.Add(e);
             FreeCoffeeClaimed += e => FreeCoffeesClaimed.Add(e);
@@ -44,14 +47,14 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain
             Projection.Project(this);
         }
 
-        public static LoyaltyCard Create(Customer customer)
+        public static LoyaltyCard Create(string customerName)
         {
             var loyaltyCard = new LoyaltyCard
             {
-                Customer = customer
+                CustomerName = customerName
             };
 
-            loyaltyCard.LoyaltyCardCreated.Invoke(new LoyaltyCardCreated(customer, DateTime.UtcNow));
+            loyaltyCard.LoyaltyCardCreated.Invoke(new LoyaltyCardCreated(customerName, DateTime.UtcNow));
 
             return loyaltyCard;
         }

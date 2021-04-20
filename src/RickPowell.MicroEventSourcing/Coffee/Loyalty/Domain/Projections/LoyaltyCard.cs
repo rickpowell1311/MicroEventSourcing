@@ -17,33 +17,25 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Domain.Projections
 
         public string CustomerName { get; set; }
 
+        private Domain.LoyaltyCard _loyaltyCard;
+
         public void Project(Domain.LoyaltyCard loyaltyCard)
         {
-            loyaltyCard.LoyaltyCardCreated += OnLoyaltyCardCreated;
-            loyaltyCard.CoffeePurchased += OnCoffeePurchased;
-            loyaltyCard.FreeCoffeeAwarded += OnFreeCoffeeAwarded;
-            loyaltyCard.FreeCoffeeClaimed += OnFreeCoffeeClaimed;
+            _loyaltyCard = loyaltyCard;
+
+            loyaltyCard.LoyaltyCardCreated += _ => Build();
+            loyaltyCard.CoffeePurchased += _ => Build();
+            loyaltyCard.FreeCoffeeAwarded += _ => Build();
+            loyaltyCard.FreeCoffeeClaimed += _ => Build();
         }
 
-        private void OnLoyaltyCardCreated(LoyaltyCardCreated evnt)
+        private void Build()
         {
-            CustomerName = evnt.Customer.Name;
-            CreatedOn = evnt.CreatedOn;
-        }
-
-        private void OnCoffeePurchased(CoffeePurchased evnt)
-        {
-            PurchasedCoffees++;
-        }
-
-        private void OnFreeCoffeeAwarded(FreeCoffeeAwarded evnt)
-        {
-            FreeCoffeesAwarded++;
-        }
-
-        private void OnFreeCoffeeClaimed(FreeCoffeeClaimed evnt)
-        {
-            FreeCoffeesClaimed++;
+            CustomerName = _loyaltyCard.CreatedLoyaltyCard.CustomerName;
+            CreatedOn = _loyaltyCard.CreatedLoyaltyCard.CreatedOn;
+            PurchasedCoffees = _loyaltyCard.PurchasedCoffees.Count;
+            FreeCoffeesAwarded = _loyaltyCard.FreeCoffeesAwarded.Count;
+            FreeCoffeesClaimed = _loyaltyCard.FreeCoffeesClaimed.Count;
         }
     }
 }

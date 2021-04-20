@@ -26,14 +26,12 @@ namespace RickPowell.MicroEventSourcing.Coffee.Loyalty.Requests
 
             public async Task<Unit> Handle(Request request, CancellationToken cancellationToken)
             {
-                var customer = new Customer(request.CustomerName);
-
                 var loyaltyCard = await _context.LoyaltyCards
-                    .SingleOrDefaultAsync(x => x.Customer.Name == request.CustomerName, cancellationToken);
+                    .SingleOrDefaultAsync(x => x.CustomerName == request.CustomerName, cancellationToken);
 
                 if (loyaltyCard == null)
                 {
-                    loyaltyCard = LoyaltyCard.Create(customer);
+                    loyaltyCard = LoyaltyCard.Create(request.CustomerName);
                     _context.LoyaltyCards.Add(loyaltyCard);
                 }
 
